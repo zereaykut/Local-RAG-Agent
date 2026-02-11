@@ -16,7 +16,7 @@ It allows you to chat with your own documents (PDFs, TXT or CSV files) by embedd
 ```text
 ├── data/
 │   └── source_docs/
-│       └── realistic_restaurant_reviews.csv  <-- Place it here
+│       └── realistic_restaurant_reviews.csv # Drop PDF, Text or CSV files here
 ├── src/                    
 │   ├── config.py           # Settings and Environment variables
 │   ├── rag_engine.py       # Document processing & Vector Store logic
