@@ -1,90 +1,97 @@
-# Local AI Agent with RAG
+# 🦙 Local AI Agent with RAG
 
-A modular Python implementation of a Local AI Agent capable of **Retrieval Augmented Generation (RAG)**. This application runs entirely on your local machine using [Ollama](https://ollama.com/), ensuring data privacy and offline capability.
+A modern, interactive Python application of a Local AI Agent capable of **Retrieval Augmented Generation (RAG)**. This application runs entirely locally on your machine using [Ollama](https://ollama.com/), ensuring 100% data privacy and offline capability. 
 
-It allows you to chat with your own documents (PDFs, TXT or CSV files) by embedding them into a local vector database.
+With its built-in Streamlit UI, you can easily upload your own documents (PDFs, TXT, or CSV files), dynamically vectorize them, and chat with them instantly.
+
+![UI Example](assets/ui-example.png)
 
 ## 🌟 Features
 
-- **100% Local**: Uses Ollama for LLM inference (Llama3, Mistral, etc.) and embeddings.
-- **RAG Capable**: automatically ingests, splits, and indexes documents from a `data` folder.
-- **Persistent Memory**: Uses ChromaDB to save embeddings so you don't have to re-index every time.
-- **Modular Design**: Separation of concerns between configuration, RAG logic, and Agent interaction.
+- **Interactive UI**: Powered by Streamlit for drag-and-drop document uploading and a seamless chat interface.
+- **100% Local & Private**: Uses Ollama for LLM inference and embeddings. No data ever leaves your machine.
+- **Dynamic RAG**: Upload documents directly through the UI. The app automatically ingests, splits, and indexes them into an ephemeral vector store.
+- **Optimized for Speed**: Defaults to `llama3.2:1b` for lightning-fast inference and `nomic-embed-text` for highly efficient local embeddings.
+- **Modern Package Management**: Uses `uv` for blazing-fast dependency resolution and virtual environment management.
 
 ## 📂 Project Structure
 
 ```text
+.
+├── app.py                  # Streamlit UI and application entry point
+├── assets/                 # Images for documentation
+│   └── ui-example.png
 ├── data/
-│   └── source_docs/
-│       └── realistic_restaurant_reviews.csv # Drop PDF, Text or CSV files here
+│   └── vector_store/       # Persistent ChromaDB storage (dynamically managed)
 ├── src/                    
 │   ├── config.py           # Settings and Environment variables
-│   ├── rag_engine.py       # Document processing & Vector Store logic
-│   └── bot_agent.py        # LLM interaction logic
-├── .env                    # Configuration file (Model names, paths)
-├── main.py                 # Entry point to run the application
-└── requirements.txt        # Python dependencies
+│   ├── rag_engine.py       # Document loaders, splitters, and ChromaDB logic
+│   └── bot_agent.py        # LangChain Agent and prompt templates
+├── uploads/                # Temporary directory for uploaded files
+├── pyproject.toml          # uv project configuration
+└── README.md
 ```
 
 ## 🚀 Prerequisites
 
-1. Python 3.10+ installed.
-2. Ollama installed and running.
-    - Download from ollama.com.
-    - Pull the models you intend to use:
+1. Python 3.11+ installed.
+2. uv installed for package management.
+3. Ollama installed and running in the background.
+    * Pull the required models via your terminal:
 
-```Bash
-ollama pull llama3
-ollama pull nomic-embed-text
-```
+    ```Bash
+    ollama pull llama3.2:1b
+    ollama pull nomic-embed-text
+    ```
 
 ## 🛠️ Installation
 
-1. Clone the repository (or create the folder structure provided).
-2. Create a Virtual Environment:
+1. Clone the repository:
 ```Bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+git clone https://github.com/zereaykut/Local-RAG-Agent.git
+cd Local-RAG-Agent
 ```
-    
-3. Install Dependencies from requirements.txt:
+
+2. Install dependencies and sync the environment using uv:
 ```Bash
-pip install -r requirements.txt
+uv sync
 ```
 
 ## ⚙️ Configuration
 
-Create a .env file in the root directory to customize your setup:
-```TOML
-# The LLM to use for chat (must be pulled in Ollama)
-MODEL_NAME=llama3
+The application uses sensible defaults, but you can override them by creating a .env file in the root directory:
 
-# The model to use for embeddings (must be pulled in Ollama)
+```TOML
+# Model Configuration
+MODEL_NAME=llama3:latest
 EMBEDDING_MODEL=nomic-embed-text
 
-# Paths
-DATA_PATH=data/source_docs
+# Directory Paths
+UPLOAD_DIR=uploads
 VECTOR_STORE_PATH=data/vector_store
 
-# RAG Tuning
+# RAG Tuning Parameters
 CHUNK_SIZE=1000
 CHUNK_OVERLAP=200
 ```
 
 ## 🏃 Usage
 
-1. Add Data: Place your .pdf, .txt or .csv files into the data/source_docs/ folder.
-2. Run the Agent:
+Start the Streamlit application:
 ```Bash
-python main.py
+uv run streamlit run app.py
 ```
-**Chat:** The system will index your documents (first run only) and then let you ask questions about them.
 
-## 🔄 Updating Data
+1. Upload: Open the provided local URL in your browser and use the sidebar to upload your PDF, TXT, or CSV files.
 
-If you add new files to the data/source_docs/ folder, you need to rebuild the vector index. You can do this by modifying main.py temporarily:
-```Python
-# Change this line in main.py
-rag.create_vector_store(force_rebuild=True)
-```
-Or simply delete the data/vector_store folder and restart the application.
+2. Process: Click "Process Documents" to chunk and embed your files into the local Chroma vector database. (Note: Processing new documents clears the previous session's vector store to prevent cross-contamination).
+
+3. Chat: Use the main chat interface to ask questions about the context of your uploaded documents!
+
+## 🧩 Tech Stack
+
+* Streamlit: Frontend UI.
+* LangChain: Orchestration framework for LLMs and RAG.
+* ChromaDB: Local vector database.
+* Ollama: Local LLM provider.
+* uv: Extremely fast Python package and project manager.
