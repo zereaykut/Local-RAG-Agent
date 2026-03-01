@@ -40,7 +40,7 @@ With its built-in Streamlit UI, you can easily upload your own documents (PDFs, 
     * Pull the required models via your terminal:
 
     ```Bash
-    ollama pull llama3.2:1b
+    ollama pull llama3:latest
     ollama pull nomic-embed-text
     ```
 
